@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Email</title>
+</head>
+<body>
+<h1>Verify your email</h1>
+<div th:if="${success}">
+    <p style="color:green" th:text="${success}"></p>
+</div>
+<div th:if="${error}">
+    <p style="color:red" th:text="${error}"></p>
+</div>
+<form th:action="@{/verify}" method="post">
+    <label>Email: <input type="email" name="email" th:value="${email}" required/></label><br/>
+    <label>Verification code: <input type="text" name="code" maxlength="6" required/></label><br/>
+    <button type="submit">Verify</button>
+</form>
+</body>
+</html>

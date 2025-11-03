@@ -1,6 +1,5 @@
 package family_tree.model;
 
-
 import family_tree.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,16 +23,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Primary key
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role")
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    @Column(name = "role", nullable = false)
+    private Role role = Role.USER;
 
-    @Column(name = "create_at")
-    private LocalDate createAt;
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserVerification userVerification;
 }

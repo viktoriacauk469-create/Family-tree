@@ -3,7 +3,9 @@ package family_tree.mapper;
 import family_tree.model.User;
 import family_tree.dto.UserDTO;
 import family_tree.model.enums.Role;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
 
     public User toUser(UserDTO userDTO) {
