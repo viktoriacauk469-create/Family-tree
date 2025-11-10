@@ -1,6 +1,5 @@
 package family_tree.security;
 
-
 import family_tree.exception.UserIsNotRegisteredException;
 import family_tree.model.User;
 import family_tree.model.UserVerification;
