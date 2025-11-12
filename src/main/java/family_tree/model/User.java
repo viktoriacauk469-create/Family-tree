@@ -2,13 +2,9 @@ package family_tree.model;
 
 import family_tree.model.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +16,7 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -34,6 +30,14 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role = Role.USER;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserVerification userVerification;
+
+    /**
+     * One User -> Many PersonalInformation (user_id in personal_information).
+     * mappedBy points to 'user' field in PersonalInformation.
+     */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<PersonalInformation> personalInformation = new ArrayList<>();
 }

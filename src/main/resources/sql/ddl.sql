@@ -20,7 +20,7 @@ CREATE TABLE users
 CREATE TABLE user_verifications
 (
     id                        BIGSERIAL PRIMARY KEY,
-    user_id                   BIGINT  NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    user_id                   BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     verification_token        VARCHAR(512),
     verification_token_expiry TIMESTAMP,
     is_verified               BOOLEAN NOT NULL
@@ -32,19 +32,18 @@ CREATE TABLE user_verifications
 CREATE TABLE personal_information
 (
     id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT REFERENCES users (id) ON DELETE CASCADE,  -- nullable, person may not be registered
     first_name VARCHAR(100),
     last_name  VARCHAR(100),
     age        INT
 );
 
 -- ============================================
--- 4️⃣ RELATIVES
+-- 4️⃣ RELATIVES (Self-referencing many-to-many)
 -- ============================================
 CREATE TABLE relatives
 (
-    person_id   BIGINT NOT NULL,
-    relative_id BIGINT NOT NULL,
-    PRIMARY KEY (person_id, relative_id),
-    FOREIGN KEY (person_id) REFERENCES personal_information (id),
-    FOREIGN KEY (relative_id) REFERENCES personal_information (id)
+    person_id   BIGINT NOT NULL REFERENCES personal_information (id) ON DELETE CASCADE,
+    relative_id BIGINT NOT NULL REFERENCES personal_information (id) ON DELETE CASCADE,
+    PRIMARY KEY (person_id, relative_id)
 );
