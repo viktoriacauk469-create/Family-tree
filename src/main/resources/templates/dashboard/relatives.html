@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Родичі</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        /* Просте стилювання щоб шаблон виглядав ок */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f4ec;
+            color: #2b2b2b;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            gap: 24px;
+        }
+
+        .left, .right {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .left {
+            flex: 1
+        }
+
+        .right {
+            width: 420px
+        }
+
+        .person-card {
+            background: #eaf0df;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .person-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #cfe0b6;
+            display: inline-block;
+        }
+
+        .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .muted {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .relatives {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rel-item {
+            background: #d7e6c8;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #6b9b54;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #d04a4a;
+            color: white;
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        select, input[type="text"] {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            min-width: 0;
+        }
+
+        .error {
+            color: #a94442;
+            background: #f2dede;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="left">
+        <h2>Ваші люди</h2>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <div th:if="${#lists.isEmpty(userPersonals)}">
+            <p class="muted">У вас ще немає персональних записів.</p>
+        </div>
+
+        <div th:each="p : ${userPersonals}">
+            <div class="person-card">
+                <div class="person-info">
+                    <span class="avatar"></span>
+                    <div>
+                        <div class="name" th:text="${p.firstName} + ' ' + ${p.lastName}">Ім'я Прізвище</div>
+                        <div class="muted">age: <span th:text="${p.age}">—</span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <a th:href="@{/relatives(userId=${userId}, selectedPersonId=${p.id})}" class="btn">Відкрити</a>
+                </div>
+            </div>
+
+            <div>
+                <div class="muted">Родичі:</div>
+                <div class="relatives">
+                    <div th:each="r : ${p.relatives}" class="rel-item">
+                        <div>
+                            <strong th:text="${r.firstName} + ' ' + ${r.lastName}">Родич</strong>
+                            <div class="muted" th:text="${r.age}">age</div>
+                        </div>
+
+                        <form th:action="@{/relatives/remove}" method="post" style="margin-left:8px;">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="personId" th:value="${p.id}"/>
+                            <input type="hidden" name="relativeId" th:value="${r.id}"/>
+                            <input type="hidden" name="userId" th:value="${userId}"/>
+                            <button type="submit" class="btn btn-danger">Видалити</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+        </div>
+    </div>
+
+    <div class="right">
+        <h3>Додати родича</h3>
+        <p class="muted">Оберіть вашу персону та введіть дані нового родича.</p>
+
+        <form th:action="@{/relatives/add}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <!-- Ввести ім'я родича -->
+            <div class="form-row">
+                <label for="relativeFirstName">Ім'я родича</label>
+                <input type="text" id="relativeFirstName" name="relativeFirstName" placeholder="Ім'я" required/>
+            </div>
+
+            <!-- Ввести прізвище родича -->
+            <div class="form-row">
+                <label for="relativeLastName">Прізвище родича</label>
+                <input type="text" id="relativeLastName" name="relativeLastName" placeholder="Прізвище" required/>
+            </div>
+
+            <!-- Ввести вік родича -->
+            <div class="form-row">
+                <label for="relativeAge">Вік</label>
+                <input type="number" id="relativeAge" name="relativeAge" placeholder="Вік" min="0" required/>
+            </div>
+
+            <input type="hidden" name="userId" th:value="${userId}"/>
+
+            <div style="margin-top:12px;">
+                <button type="submit" class="btn btn-primary">Додати родича</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

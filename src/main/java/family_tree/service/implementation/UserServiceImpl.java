@@ -82,10 +82,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDTO> getUserByEmail(String email) {
+    public UserDTO getUserByEmail(String email) {
         return userRepository
                 .findUserByEmail(email)
-                .map(userMapper::toUserDTO);
+                .map(userMapper::toUserDTO).orElseThrow(() -> new UserNotFoundException("User with email: " + email + "not found"));
     }
 
     @Override

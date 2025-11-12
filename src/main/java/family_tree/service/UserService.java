@@ -14,7 +14,7 @@ public interface UserService {
     void changePassword(String email, String newPassword);
 
     Boolean existsByEmail(String email);
-    Optional<UserDTO> getUserByEmail(String email);
+    UserDTO getUserByEmail(String email);
     Optional<UserDTO> getUserById(Long id);
 
     // New methods for verification

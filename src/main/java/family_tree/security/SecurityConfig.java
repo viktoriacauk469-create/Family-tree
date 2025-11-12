@@ -15,16 +15,13 @@ public class SecurityConfig {
         http
                 //.csrf(csrf -> csrf.disable())                     // for development; -> in serious testing enable it
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/verify", "/login").permitAll()
+                        .requestMatchers("/register", "/verify", "/login")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")                      // URL login page
-                        .loginProcessingUrl("/login")             // URL для обробки POST запиту
-                        .usernameParameter("username")            // name variable email in form
-                        .passwordParameter("password")            // name variable password in form
-                        .defaultSuccessUrl("/", true)       // where to redirect after success login.
-                        .failureUrl("/login?error=true")         // where to redirect when page have errors
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/relatives", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

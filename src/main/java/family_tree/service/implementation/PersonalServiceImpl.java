@@ -35,7 +35,9 @@ public class PersonalServiceImpl implements PersonalService {
     public PersonalInformation createPersonalForUser(Long userId, PersonalInformation personal) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PersonNotFoundException("User not found: " + userId));
+
         personal.setUser(user);
+
         if (personal.getRelatives() == null) personal.setRelatives(new HashSet<>());
         PersonalInformation saved = personRepository.save(personal);
 
@@ -101,14 +103,8 @@ public class PersonalServiceImpl implements PersonalService {
 
     @Override
     public List<PersonalInformation> getRelativesForUser(Long userId) {
-        List<PersonalInformation> personals = personRepository.findByUser_Id(userId);
-        if (personals.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return personals.stream()
-                .flatMap(pi -> pi.getRelatives().stream())
-                .distinct()
-                .collect(Collectors.toList());
+
+        return personRepository.findByUserId(userId);
     }
 
     @Override
