@@ -64,10 +64,9 @@ public class PersonalInformationController {
 
     @PostMapping("/remove")
     public String removeRelative(@RequestParam("personId") Long personId,
-                                 @RequestParam("relativeId") Long relativeId,
                                  RedirectAttributes redirectAttributes) {
         try {
-            personalService.removeRelative(personId, relativeId);
+            personalService.removeRelative(personId);
             return "redirect:/relatives";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

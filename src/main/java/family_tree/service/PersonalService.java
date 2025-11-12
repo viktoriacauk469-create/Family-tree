@@ -51,4 +51,6 @@ public interface PersonalService {
      * Find personal record by id.
      */
     Optional<PersonalInformation> findById(Long id);
+
+    void removeRelative(Long personId);
 }

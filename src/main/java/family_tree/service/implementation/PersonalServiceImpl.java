@@ -48,6 +48,16 @@ public class PersonalServiceImpl implements PersonalService {
 
     @Override
     @Transactional
+    public void removeRelative(Long personId) {
+        PersonalInformation person = personRepository.findById(personId)
+                .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personId));
+
+        personRepository.delete(person);
+
+    }
+
+    @Override
+    @Transactional
     public PersonalInformation linkPersonalToUser(Long personalId, Long userId) {
         PersonalInformation personal = personRepository.findById(personalId)
                 .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personalId));
@@ -103,7 +113,6 @@ public class PersonalServiceImpl implements PersonalService {
 
     @Override
     public List<PersonalInformation> getRelativesForUser(Long userId) {
-
         return personRepository.findByUserId(userId);
     }
 
