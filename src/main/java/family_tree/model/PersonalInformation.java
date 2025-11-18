@@ -22,18 +22,11 @@ public class PersonalInformation {
     private String lastName;
     private Integer age;
 
-    /**
-     * Optional link to a User. Nullable: person may be NOT linked to a user (unregistered person).
-     * Many personal records can reference the same User (One User -> Many PersonalInformation).
-     */
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    /**
-     * Self-referencing many-to-many for relatives.
-     * Use helper methods to keep relationship symmetric.
-     */
     @ManyToMany
     @JoinTable(
             name = "relatives",

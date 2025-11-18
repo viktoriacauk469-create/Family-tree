@@ -21,15 +21,10 @@ public class PersonalInformationController {
     private final PersonalService personalService;
     private final UserService userService;
 
-    /**
-     * Показати сторінку relatives для конкретного user.
-     * Передавай ?userId=... в запиті (поки що так простіше).
-     */
     @GetMapping
     public String getRelatives(Principal principal, Model model) {
         UserDTO user = userService.getUserByEmail(principal.getName());
 
-        // Показуємо всі персональні записи користувача
         List<PersonalInformation> userPersonals = personalService.getRelativesForUser(user.getId());
 
         model.addAttribute("userId", user.getId());
