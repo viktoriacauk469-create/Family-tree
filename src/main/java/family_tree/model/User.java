@@ -1,5 +1,7 @@
 package family_tree.model;
 
+import family_tree.model.enums.BloodType;
+import family_tree.model.enums.RhesusFactor;
 import family_tree.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,6 +31,13 @@ public class User {
     @Builder.Default
     @Column(name = "role", nullable = false)
     private Role role = Role.USER;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "blood_type")
+    private BloodType bloodType;
+
+    @Column(name = "rhesus_factor")
+    private RhesusFactor rhesusFactor;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserVerification userVerification;

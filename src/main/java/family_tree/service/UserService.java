@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface UserService {
 
     UserDTO register(UserDTO userDTO, RandomNumberGenerator.VerificationCode verificationCode);
+    UserDTO updateUser(UserDTO user);
     void deleteUser(String email);
     void changePassword(String email, String newPassword);
 

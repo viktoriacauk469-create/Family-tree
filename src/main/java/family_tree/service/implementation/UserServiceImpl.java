@@ -3,6 +3,7 @@ package family_tree.service.implementation;
 import family_tree.dto.UserDTO;
 import family_tree.exception.UserNotFoundException;
 import family_tree.logger.Logger;
+import family_tree.mapper.EnumMapper;
 import family_tree.mapper.UserMapper;
 import family_tree.model.User;
 import family_tree.model.UserVerification;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final EnumMapper enumMapper;
 
     @Override
     @Transactional
@@ -56,6 +58,32 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toUserDTO(savedUser);
     }
+
+    @Override
+    @Transactional
+    public UserDTO updateUser(UserDTO userDTO) {
+        if (userDTO == null) {
+            throw new IllegalArgumentException("userDTO is null");
+        }
+
+        User existingUser = userRepository.findUserByEmail(userDTO.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User with email: " + userDTO.getEmail() + " not found"));
+
+        if (userDTO.getRole() != null) {
+            existingUser.setRole(enumMapper.stringToRole(userDTO.getRole()));
+        }
+        if (userDTO.getBloodType() != null) {
+            existingUser.setBloodType(enumMapper.stringToBloodType(userDTO.getBloodType()));
+        }
+        if (userDTO.getRhesusFactor() != null) {
+            existingUser.setRhesusFactor(enumMapper.stringToRhesusFactor(userDTO.getRhesusFactor()));
+        }
+
+        User saved = userRepository.save(existingUser);
+
+        return userMapper.toUserDTO(saved);
+    }
+
 
     @Override
     public void deleteUser(String email) {

@@ -22,7 +22,6 @@ public class PersonalInformation {
     private String lastName;
     private Integer age;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
