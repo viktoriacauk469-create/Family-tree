@@ -1,5 +1,6 @@
 package family_tree.service.implementation;
 
+import family_tree.dto.PredictionEmailRequest;
 import family_tree.logger.Logger;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -62,6 +63,26 @@ public class EmailService {
             securityLogger.logGeneralError(e instanceof Exception ? (Exception) e : new Exception(e));
             // swallow the exception so user registration flow continues; admins can inspect logs
         }
+    }
+
+    public void sendPredictionEmail(PredictionEmailRequest request) throws MessagingException {
+        MimeMessage msg = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
+
+        helper.setTo(request.getToEmail());
+        helper.setSubject("Результат передбачення групи крові");
+        helper.setFrom("no-reply@example.com");
+
+        Context context = new Context();
+        context.setVariable("father", request.getFather());
+        context.setVariable("mother", request.getMother());
+        context.setVariable("aboProbabilities", request.getAboProbabilities());
+        context.setVariable("rhProbabilities", request.getRhProbabilities());
+
+        String html = templateEngine.process("email/prediction_result.html", context);
+
+        helper.setText(html, true);
+        mailSender.send(msg);
     }
 
 }

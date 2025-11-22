@@ -5,8 +5,11 @@ import family_tree.exception.UserNotFoundException;
 import family_tree.logger.Logger;
 import family_tree.mapper.EnumMapper;
 import family_tree.mapper.UserMapper;
+import family_tree.model.PersonalInformation;
 import family_tree.model.User;
 import family_tree.model.UserVerification;
+import family_tree.model.enums.BloodType;
+import family_tree.model.enums.RhesusFactor;
 import family_tree.repository.UserRepository;
 import family_tree.repository.UserVerificationRepository;
 import family_tree.service.UserService;
@@ -62,28 +65,33 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO updateUser(UserDTO userDTO) {
-        if (userDTO == null) {
-            throw new IllegalArgumentException("userDTO is null");
-        }
+        User user = userRepository.findById(userDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Користувача не знайдено"));
 
-        User existingUser = userRepository.findUserByEmail(userDTO.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User with email: " + userDTO.getEmail() + " not found"));
+        PersonalInformation personalInformation = user.getPersonalInformation().stream()
+                .filter(PersonalInformation::getIsMainProfile)
+                .findFirst()
+                .orElseGet(() -> {
+                    PersonalInformation pi = PersonalInformation.builder()
+                            .user(user)
+                            .isMainProfile(true)
+                            .build();
+                    user.getPersonalInformation().add(pi);
+                    return pi;
+                });
 
-        if (userDTO.getRole() != null) {
-            existingUser.setRole(enumMapper.stringToRole(userDTO.getRole()));
-        }
-        if (userDTO.getBloodType() != null) {
-            existingUser.setBloodType(enumMapper.stringToBloodType(userDTO.getBloodType()));
-        }
-        if (userDTO.getRhesusFactor() != null) {
-            existingUser.setRhesusFactor(enumMapper.stringToRhesusFactor(userDTO.getRhesusFactor()));
-        }
+        personalInformation.setFirstName(userDTO.getFirstName());
+        personalInformation.setLastName(userDTO.getLastName());
+        personalInformation.setAge(userDTO.getAge());
 
-        User saved = userRepository.save(existingUser);
+        if (userDTO.getBloodType() != null)
+            personalInformation.setBloodType(enumMapper.stringToBloodType(userDTO.getBloodType()));
+        if (userDTO.getRhesusFactor() != null)
+            personalInformation.setRhesusFactor(enumMapper.stringToRhesusFactor(userDTO.getRhesusFactor()));
 
-        return userMapper.toUserDTO(saved);
+        userRepository.save(user);
+        return userMapper.toUserDTO(user);
     }
-
 
     @Override
     public void deleteUser(String email) {

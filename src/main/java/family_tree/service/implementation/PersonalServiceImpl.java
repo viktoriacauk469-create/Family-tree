@@ -10,114 +10,66 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PersonalServiceImpl implements PersonalService {
 
-    private final PersonalInformationRepository personRepository;
+    private final PersonalInformationRepository personalRepository;
     private final UserRepository userRepository;
-
-    @Override
-    @Transactional
-    public PersonalInformation createPersonal(PersonalInformation personal) {
-        personal.setId(null);
-        if (personal.getRelatives() == null) {
-            personal.setRelatives(new HashSet<>());
-        }
-        return personRepository.save(personal);
-    }
 
     @Override
     @Transactional
     public PersonalInformation createPersonalForUser(Long userId, PersonalInformation personal) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PersonNotFoundException("User not found: " + userId));
-
         personal.setUser(user);
-
-        if (personal.getRelatives() == null) personal.setRelatives(new HashSet<>());
-        PersonalInformation saved = personRepository.save(personal);
-
-        // keep user's collection consistent (optional)
+        PersonalInformation saved = personalRepository.save(personal);
         user.getPersonalInformation().add(saved);
         return saved;
     }
 
     @Override
     @Transactional
-    public void removeRelative(Long personId) {
-        PersonalInformation person = personRepository.findById(personId)
-                .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personId));
-
-        personRepository.delete(person);
-
-    }
-
-    @Override
-    @Transactional
-    public PersonalInformation linkPersonalToUser(Long personalId, Long userId) {
-        PersonalInformation personal = personRepository.findById(personalId)
+    public void removeRelative(Long personalId) {
+        PersonalInformation personal = personalRepository.findById(personalId)
                 .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personalId));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new PersonNotFoundException("User not found: " + userId));
-
-        personal.setUser(user);
-        return personRepository.save(personal);
+        personalRepository.delete(personal);
     }
 
     @Override
-    @Transactional
-    public PersonalInformation addRelative(Long personId, Long relativeId) {
-        if (Objects.equals(personId, relativeId)) {
-            throw new IllegalArgumentException("Cannot add person as a relative to themself");
-        }
+    public List<PersonalInformation> getPersonalsForUser(Long userId) {
+        return personalRepository.findByUserId(userId);
+    }
 
-        PersonalInformation person = personRepository.findById(personId)
+    @Override
+    public PersonalInformation addRelative(Long personId, Long relativeId) {
+        PersonalInformation person = personalRepository.findById(personId)
                 .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personId));
-        PersonalInformation relative = personRepository.findById(relativeId)
+        PersonalInformation relative = personalRepository.findById(relativeId)
                 .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + relativeId));
 
         person.addRelative(relative);
 
-        personRepository.save(person);
-        personRepository.save(relative);
+        personalRepository.save(person);
+        personalRepository.save(relative);
 
         return person;
     }
 
     @Override
-    @Transactional
     public PersonalInformation removeRelative(Long personId, Long relativeId) {
-        PersonalInformation person = personRepository.findById(personId)
+        PersonalInformation person = personalRepository.findById(personId)
                 .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personId));
-        PersonalInformation relative = personRepository.findById(relativeId)
+        PersonalInformation relative = personalRepository.findById(relativeId)
                 .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + relativeId));
 
         person.removeRelative(relative);
 
-        personRepository.save(person);
-        personRepository.save(relative);
+        personalRepository.save(person);
+        personalRepository.save(relative);
 
         return person;
-    }
-
-    @Override
-    public List<PersonalInformation> getRelatives(Long personId) {
-        PersonalInformation person = personRepository.findById(personId)
-                .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personId));
-        return new ArrayList<>(person.getRelatives());
-    }
-
-    @Override
-    public List<PersonalInformation> getRelativesForUser(Long userId) {
-        return personRepository.findByUserId(userId);
-    }
-
-    @Override
-    public Optional<PersonalInformation> findById(Long id) {
-        return personRepository.findById(id);
     }
 }

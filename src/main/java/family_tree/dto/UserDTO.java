@@ -15,6 +15,11 @@ public class UserDTO {
     private String email;
     private String password;
     private String role;
+
+    // parameters that have personal_information (PersonalInformation class includes that parameters)
+    private String firstName;
+    private String lastName;
+    private Integer age;
     private String bloodType;
     private String rhesusFactor;
 

@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface PersonalInformationRepository extends JpaRepository<PersonalInformation, Long> {
 
     List<PersonalInformation> findByUserId(Long userId);
+
+
 }
