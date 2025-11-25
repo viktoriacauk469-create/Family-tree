@@ -1,5 +1,7 @@
 package family_tree.model;
 
+import family_tree.model.enums.BloodType;
+import family_tree.model.enums.RhesusFactor;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +23,18 @@ public class PersonalInformation {
     private String firstName;
     private String lastName;
     private Integer age;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "blood_type")
+    private BloodType bloodType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rhesus_factor")
+    private RhesusFactor rhesusFactor;
+
+    @Column(name = "is_main_profile")
+    @Builder.Default
+    private Boolean isMainProfile = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

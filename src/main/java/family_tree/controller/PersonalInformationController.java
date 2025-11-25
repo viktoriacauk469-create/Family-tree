@@ -24,11 +24,11 @@ public class PersonalInformationController {
     @GetMapping
     public String getRelatives(Principal principal, Model model) {
         UserDTO user = userService.getUserByEmail(principal.getName());
+        if (user == null) return "redirect:/login";
 
-        List<PersonalInformation> userPersonals = personalService.getRelativesForUser(user.getId());
-
+        List<PersonalInformation> personals = personalService.getPersonalsForUser(user.getId());
         model.addAttribute("userId", user.getId());
-        model.addAttribute("userPersonals", userPersonals);
+        model.addAttribute("userPersonals", personals); // саме ця змінна використовується у Thymeleaf
 
         return "dashboard/relatives";
     }
@@ -41,15 +41,12 @@ public class PersonalInformationController {
                               RedirectAttributes redirectAttributes) {
         try {
             UserDTO user = userService.getUserByEmail(principal.getName());
-
             PersonalInformation personal = PersonalInformation.builder()
                     .firstName(firstName)
                     .lastName(lastName)
                     .age(age)
                     .build();
-
             personalService.createPersonalForUser(user.getId(), personal);
-
             return "redirect:/relatives";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -58,14 +55,15 @@ public class PersonalInformationController {
     }
 
     @PostMapping("/remove")
-    public String removeRelative(@RequestParam("personId") Long personId,
+    public String removeRelative(@RequestParam Long personId,
                                  RedirectAttributes redirectAttributes) {
         try {
-            personalService.removeRelative(personId);
+            personalService.removeRelative(personId); // тепер цей метод є
             return "redirect:/relatives";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/relatives";
         }
     }
+
 }

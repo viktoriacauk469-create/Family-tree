@@ -13,7 +13,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())                     // for development; -> in serious testing enable it
+                //(MVC off) (MVT on)
+                .csrf(csrf -> csrf.disable()) // for development; -> in serious testing enable it
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/verify", "/login", "/api/**")
                         .permitAll()
