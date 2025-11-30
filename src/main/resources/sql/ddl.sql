@@ -8,10 +8,10 @@
 -- ============================================
 CREATE TABLE users
 (
-    id            BIGSERIAL PRIMARY KEY,
-    email         VARCHAR(255) UNIQUE NOT NULL,
-    password      VARCHAR(255)        NOT NULL,
-    role          VARCHAR(20)         NOT NULL
+    id       BIGSERIAL PRIMARY KEY,
+    email    VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255)        NOT NULL,
+    role     VARCHAR(20)         NOT NULL
 );
 
 -- ============================================
@@ -31,13 +31,13 @@ CREATE TABLE user_verifications
 -- ============================================
 CREATE TABLE personal_information
 (
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT REFERENCES users (id) ON DELETE CASCADE, -- nullable, person may not be registered
-    first_name VARCHAR(100),
-    last_name  VARCHAR(100),
-    age        INT,
-    blood_type    VARCHAR(20),
-    rhesus_factor VARCHAR(10),
+    id              BIGSERIAL PRIMARY KEY,
+    user_id         BIGINT REFERENCES users (id) ON DELETE CASCADE, -- nullable, person may not be registered
+    first_name      VARCHAR(100),
+    last_name       VARCHAR(100),
+    age             INT,
+    blood_type      VARCHAR(20),
+    rhesus_factor   VARCHAR(10),
     is_main_profile BOOLEAN DEFAULT FALSE
 );
 
