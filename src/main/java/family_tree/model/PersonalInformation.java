@@ -1,9 +1,11 @@
 package family_tree.model;
 
 import family_tree.model.enums.BloodType;
+import family_tree.model.enums.Gender;
 import family_tree.model.enums.RhesusFactor;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +27,10 @@ public class PersonalInformation {
     private Integer age;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "blood_type")
     private BloodType bloodType;
 
@@ -39,6 +45,8 @@ public class PersonalInformation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+
 
     @ManyToMany
     @JoinTable(

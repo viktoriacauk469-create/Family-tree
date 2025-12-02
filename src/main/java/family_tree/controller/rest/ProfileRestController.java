@@ -31,6 +31,7 @@ public class ProfileRestController {
         user.setBloodType(request.bloodType);
         user.setRhesusFactor(request.rhesusFactor);
         user.setAge(request.age);
+        user.setGender(user.getGender());
 
         userService.updateUser(user);
 
@@ -43,6 +44,7 @@ public class ProfileRestController {
         String lastName;
         String bloodType;
         String rhesusFactor;
+        String gender;
         Integer age;
     }
 }

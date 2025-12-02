@@ -8,8 +8,6 @@ import family_tree.mapper.UserMapper;
 import family_tree.model.PersonalInformation;
 import family_tree.model.User;
 import family_tree.model.UserVerification;
-import family_tree.model.enums.BloodType;
-import family_tree.model.enums.RhesusFactor;
 import family_tree.repository.UserRepository;
 import family_tree.repository.UserVerificationRepository;
 import family_tree.service.UserService;
@@ -83,6 +81,7 @@ public class UserServiceImpl implements UserService {
         personalInformation.setFirstName(userDTO.getFirstName());
         personalInformation.setLastName(userDTO.getLastName());
         personalInformation.setAge(userDTO.getAge());
+        personalInformation.setGender(enumMapper.stringToGender(userDTO.getGender()));
 
         if (userDTO.getBloodType() != null)
             personalInformation.setBloodType(enumMapper.stringToBloodType(userDTO.getBloodType()));

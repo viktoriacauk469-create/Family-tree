@@ -16,6 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserMapper {
 
+    private EnumMapper enumMapper;
+
     public UserDTO toUserDTO(User user) {
         if (user == null) return null;
 
@@ -33,6 +35,7 @@ public class UserMapper {
                 .firstName(personalOpt.map(PersonalInformation::getFirstName).orElse(null))
                 .lastName(personalOpt.map(PersonalInformation::getLastName).orElse(null))
                 .age(personalOpt.map(PersonalInformation::getAge).orElse(null))
+                .gender(personalOpt.map(personalInformation -> enumMapper.genderToString(personalInformation.getGender())).orElse(null))
                 .bloodType(personalOpt.map(pi -> pi.getBloodType() != null ? pi.getBloodType().name() : null).orElse(null))
                 .rhesusFactor(personalOpt.map(pi -> pi.getRhesusFactor() != null ? pi.getRhesusFactor().name() : null).orElse(null))
                 .build();

@@ -1,6 +1,7 @@
 package family_tree.mapper;
 
 import family_tree.model.enums.BloodType;
+import family_tree.model.enums.Gender;
 import family_tree.model.enums.RhesusFactor;
 import family_tree.model.enums.Role;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,12 @@ public class EnumMapper {
         return rhesusFactor == null ? null : RhesusFactor.valueOf(rhesusFactor);
     }
 
-
+    // == Gender ==
+    public String genderToString(Gender gender) {
+        return gender == null ? null : gender.name();
+    }
+    public Gender stringToGender(String gender) {
+        return gender == null ? null : Gender.valueOf(gender);
+    }
 
 }

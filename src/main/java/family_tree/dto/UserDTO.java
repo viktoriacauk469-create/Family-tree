@@ -20,6 +20,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private Integer age;
+    private String gender;
     private String bloodType;
     private String rhesusFactor;
 
