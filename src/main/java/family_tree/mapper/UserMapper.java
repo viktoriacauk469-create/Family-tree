@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserMapper {
 
-    private EnumMapper enumMapper;
+    private final EnumMapper enumMapper;
 
     public UserDTO toUserDTO(User user) {
         if (user == null) return null;

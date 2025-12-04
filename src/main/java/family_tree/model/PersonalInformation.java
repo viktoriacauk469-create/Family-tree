@@ -5,7 +5,6 @@ import family_tree.model.enums.Gender;
 import family_tree.model.enums.RhesusFactor;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,11 +41,16 @@ public class PersonalInformation {
     @Builder.Default
     private Boolean isMainProfile = false;
 
+    // ✅ ДОДАНО: Поля для одного фото
+    @Column(name = "photo_file_name")
+    private String photoFileName;
+
+    @Column(name = "photo_file_path")
+    private String photoFilePath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-
 
     @ManyToMany
     @JoinTable(
@@ -57,10 +61,23 @@ public class PersonalInformation {
     @Builder.Default
     private Set<PersonalInformation> relatives = new HashSet<>();
 
+    public boolean hasPhoto() {
+        return photoFileName != null && photoFilePath != null;
+    }
+
+    public void setPhoto(String fileName, String filePath) {
+        this.photoFileName = fileName;
+        this.photoFilePath = filePath;
+    }
+
+    public void removePhoto() {
+        this.photoFileName = null;
+        this.photoFilePath = null;
+    }
+
     public void addRelative(PersonalInformation relative) {
         if (relative == null || relative.equals(this)) return;
         this.relatives.add(relative);
-        // ensure symmetric relation:
         if (!relative.getRelatives().contains(this)) {
             relative.getRelatives().add(this);
         }

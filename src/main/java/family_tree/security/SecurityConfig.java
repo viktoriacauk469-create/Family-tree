@@ -14,7 +14,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 //(MVC off) (MVT on)
-                .csrf(csrf -> csrf.disable()) // for development; -> in serious testing enable it
+                //.csrf(csrf -> csrf.disable()) // for development; -> in serious testing enable it
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/verify", "/login", "/api/**")
                         .permitAll()

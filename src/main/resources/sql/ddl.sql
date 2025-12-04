@@ -1,5 +1,5 @@
 -- ============================================
--- DDL: family-tree Database Schema
+-- DDL: family-tree
 -- Author: Andrii Kachmar
 -- ============================================
 
@@ -8,10 +8,10 @@
 -- ============================================
 CREATE TABLE users
 (
-    id            BIGSERIAL PRIMARY KEY,
-    email         VARCHAR(255) UNIQUE NOT NULL,
-    password      VARCHAR(255)        NOT NULL,
-    role          VARCHAR(20)         NOT NULL
+    id       BIGSERIAL PRIMARY KEY,
+    email    VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255)        NOT NULL,
+    role     VARCHAR(20)         NOT NULL
 );
 
 -- ============================================
@@ -31,14 +31,17 @@ CREATE TABLE user_verifications
 -- ============================================
 CREATE TABLE personal_information
 (
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT REFERENCES users (id) ON DELETE CASCADE, -- nullable, person may not be registered
-    first_name VARCHAR(100),
-    last_name  VARCHAR(100),
-    age        INT,
-    blood_type    VARCHAR(20),
-    rhesus_factor VARCHAR(10),
-    is_main_profile BOOLEAN DEFAULT FALSE
+    id              BIGSERIAL PRIMARY KEY,
+    user_id         BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    first_name      VARCHAR(100),
+    last_name       VARCHAR(100),
+    age             INT,
+    gender          VARCHAR(20),
+    blood_type      VARCHAR(20),
+    rhesus_factor   VARCHAR(10),
+    is_main_profile BOOLEAN DEFAULT FALSE,
+    photo_file_name VARCHAR(255),
+    photo_file_path VARCHAR(500)
 );
 
 -- ============================================
@@ -50,3 +53,4 @@ CREATE TABLE relatives
     relative_id BIGINT NOT NULL REFERENCES personal_information (id) ON DELETE CASCADE,
     PRIMARY KEY (person_id, relative_id)
 );
+
