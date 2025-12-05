@@ -13,4 +13,5 @@ public interface PersonalService {
     List<PersonalInformation> getPersonalsForUser(Long userId);
     PersonalInformation addRelative(Long personId, Long relativeId);
     PersonalInformation removeRelative(Long personId, Long relativeId);
+    PersonalInformation updatePerson(Long personId, PersonalInformation relative);
 }

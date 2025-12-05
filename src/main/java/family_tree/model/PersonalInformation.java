@@ -41,7 +41,6 @@ public class PersonalInformation {
     @Builder.Default
     private Boolean isMainProfile = false;
 
-    // ✅ ДОДАНО: Поля для одного фото
     @Column(name = "photo_file_name")
     private String photoFileName;
 

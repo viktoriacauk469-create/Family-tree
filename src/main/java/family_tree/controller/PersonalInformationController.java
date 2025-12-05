@@ -46,7 +46,6 @@ public class PersonalInformationController {
         try {
             UserDTO user = userService.getUserByEmail(principal.getName());
 
-            // Створити персону
             PersonalInformation personal = PersonalInformation.builder()
                     .firstName(firstName)
                     .lastName(lastName)
@@ -55,7 +54,6 @@ public class PersonalInformationController {
 
             PersonalInformation savedPersonal = personalService.createPersonalForUser(user.getId(), personal);
 
-            // Завантажити фото якщо є
             if (photo != null && !photo.isEmpty()) {
                 try {
                     photoService.uploadPhoto(savedPersonal.getId(), photo);
@@ -78,12 +76,9 @@ public class PersonalInformationController {
     public String removeRelative(@RequestParam Long personId,
                                  RedirectAttributes redirectAttributes) {
         try {
-            // Видалити фото якщо є
             try {
                 photoService.deletePersonPhoto(personId);
-            } catch (Exception e) {
-                // Ігноруємо помилку якщо фото немає
-            }
+            } catch (Exception e) {}
 
             personalService.removeRelative(personId);
             redirectAttributes.addFlashAttribute("success", "Персону видалено!");

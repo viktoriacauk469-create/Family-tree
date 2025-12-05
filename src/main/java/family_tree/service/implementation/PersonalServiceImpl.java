@@ -1,6 +1,7 @@
 package family_tree.service.implementation;
 
 import family_tree.exception.PersonNotFoundException;
+import family_tree.mapper.EnumMapper;
 import family_tree.model.PersonalInformation;
 import family_tree.model.User;
 import family_tree.repository.PersonalInformationRepository;
@@ -18,6 +19,7 @@ public class PersonalServiceImpl implements PersonalService {
 
     private final PersonalInformationRepository personalRepository;
     private final UserRepository userRepository;
+    private final EnumMapper enumMapper;
 
     @Override
     @Transactional
@@ -71,5 +73,42 @@ public class PersonalServiceImpl implements PersonalService {
         personalRepository.save(relative);
 
         return person;
+    }
+
+    @Override
+    @Transactional
+    public PersonalInformation updatePerson(Long personId, PersonalInformation updatedPerson) {
+        if (updatedPerson == null) {
+            throw new IllegalArgumentException("Updated data cannot be null");
+        }
+
+        PersonalInformation person = personalRepository.findById(personId)
+                .orElseThrow(() -> new PersonNotFoundException("Personal not found: " + personId));
+
+        if (updatedPerson.getFirstName() != null && !updatedPerson.getFirstName().trim().isEmpty()) {
+            person.setFirstName(updatedPerson.getFirstName().trim());
+        }
+
+        if (updatedPerson.getLastName() != null && !updatedPerson.getLastName().trim().isEmpty()) {
+            person.setLastName(updatedPerson.getLastName().trim());
+        }
+
+        if (updatedPerson.getAge() != null && updatedPerson.getAge() >= 0) {
+            person.setAge(updatedPerson.getAge());
+        }
+
+        if (updatedPerson.getGender() != null) {
+            person.setGender(updatedPerson.getGender());
+        }
+
+        if (updatedPerson.getBloodType() != null) {
+            person.setBloodType(updatedPerson.getBloodType());
+        }
+
+        if (updatedPerson.getRhesusFactor() != null) {
+            person.setRhesusFactor(updatedPerson.getRhesusFactor());
+        }
+
+        return personalRepository.save(person);
     }
 }

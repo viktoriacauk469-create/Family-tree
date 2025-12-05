@@ -104,8 +104,7 @@
                 <div class="person-header">
                     <div class="person-info">
                         <!-- Avatar/Photo -->
-                        <div th:if="${p.
-hasPhoto()}">
+                        <div th:if="${p.hasPhoto()}">
                             <img th:src="@{/api/photos/person/{id}(id=${p.id})}"
                                  class="avatar"
                                  th:alt="${p.firstName}"
