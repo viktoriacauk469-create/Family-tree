@@ -32,6 +32,6 @@ public class PersonalPageController {
             @ModelAttribute("person") PersonalInformation updated
     ) {
         personalService.updatePerson(id, updated);
-        return "redirect:/dashboard"; // повернення куди треба
+        return "redirect:/dashboard";
     }
 }
