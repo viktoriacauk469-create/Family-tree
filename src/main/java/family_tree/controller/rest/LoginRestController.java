@@ -26,5 +26,7 @@ public class LoginRestController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
+
+
     }
 }
